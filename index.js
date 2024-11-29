@@ -18,17 +18,22 @@ const getData = async () => {
 };
 
 const setDataByGroup = async (group, chatId, $) => {
-  const groupNumber = bot.sendMessage(chatId, `Расписание группы ${group} на пятницу: `);
-  let message = '';
-  for (let i = 1; i < 9; i++) {
-    const tableData = $('#g26_' + i)
-      .text()
-      .trim();
-    if (tableData !== '') {
-      message += tableData + '\n' + '\n';
+  for (let i = 43; i >= 17; i--) {
+    if ($(`#g${i}`).text() == group) {
+      const groupId = '#g' + i;
+      bot.sendMessage(chatId, `Расписание группы ${group} на пятницу: `);
+      let message = '';
+      for (let i = 1; i < 9; i++) {
+        const tableData = $(groupId + '_' + i)
+          .text()
+          .trim();
+        if (tableData !== '') {
+          message += tableData + '\n' + '\n';
+        }
+      }
+      return bot.sendMessage(chatId, message);
     }
   }
-  return bot.sendMessage(chatId, message);
 };
 
 const start = () => {
@@ -49,7 +54,6 @@ const start = () => {
     };
 
     let count = 0;
-    console.log($(`#g${32}`).LoadedCheerio);
     for (let i = 43; i >= 17; i--) {
       const groupName = $(`#g${i} > b`).text();
 
@@ -76,6 +80,7 @@ const start = () => {
     if (text === '/data_send') {
       // setDataByGroup(data, chatId, $);
     }
+    return bot.sendMessage(chatId, 'Извините, я не понимаю такие слова');
   });
   bot.on('callback_query', async (msg) => {
     const $ = await getData();
