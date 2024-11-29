@@ -49,6 +49,7 @@ const start = () => {
     };
 
     let count = 0;
+    console.log($(`#g${32}`).LoadedCheerio);
     for (let i = 43; i >= 17; i--) {
       const groupName = $(`#g${i} > b`).text();
 
