@@ -1,6 +1,26 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const currentDay = new Date().getDay() >= 5 ? 1 : new Date().getDay();
+const day = new Date().getDay();
+
+let currentDay = day >= 5 || day == 0 ? 1 : day;
+setInterval(() => {
+  if (new Date().getHours() >= 15) {
+    if (day == currentDay) {
+      currentDay++;
+      getData();
+    }
+  }
+}, 60000);
+const getData = async () => {
+  try {
+    const { data } = await axios.get(
+      `https://xn----3-iddzneycrmpn.xn--p1ai/lesson_table_show/?day=${currentDay}`,
+    );
+    return cheerio.load(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 module.exports = {
   year: {
@@ -14,16 +34,6 @@ module.exports = {
     }),
   },
   dayOfWeek: ['понедельник', 'вторник', 'среду', 'четверг', 'пятницу', 'субботу', 'воскресенье'],
-  getData: async () => {
-    try {
-      const { data } = await axios.get(
-        `https://xn----3-iddzneycrmpn.xn--p1ai/lesson_table_show/?day=${currentDay}`,
-      );
-      return cheerio.load(data);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
+  getData: getData,
   currentDay: currentDay,
 };
